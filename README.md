@@ -78,13 +78,9 @@ $logger->info('User {username} was created', ['username' => 'chadicus']);
 PSR Log MongoDB requires PHP 5.6 (or later).
 
 ##Composer
-To add the library as a local, per-project dependency use [Composer](http://getcomposer.org)! Simply add a dependency on `chadicus/psr-log-mongodb` to your project's `composer.json` file such as:
-```json
-{
-    "require": {
-        "chadicus/psr-log-mongodb": "^1.0"
-    }
-}
+To add the library as a local, per-project dependency use [Composer](http://getcomposer.org)! Simply add a dependency on `chadicus/psr-log-mongodb` to your project's `composer.json`.
+```sh
+composer require chadicus/psr-log-mongodb
 ```
 
 ##Contact
