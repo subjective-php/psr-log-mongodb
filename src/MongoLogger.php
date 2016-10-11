@@ -43,9 +43,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        if (!is_string($level) || !defined('\\Psr\\Log\\LogLevel::' . strtoupper($level))) {
-            throw new InvalidArgumentException('Given $level was not a known LogLevel');
-        }
+        LoggerHelper::validateLevel($level);
 
         if (!is_scalar($message) && !(is_object($message) && method_exists($message, '__toString'))) {
             throw new InvalidArgumentException('Given $message was a valid string value');
@@ -55,29 +53,10 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
             [
                 'timestamp' => new UTCDateTime((int)(microtime(true) * 1000)),
                 'level' => $level,
-                'message' => self::interpolate((string)$message, $context),
+                'message' => LoggerHelper::interpolateMessage((string)$message, $context),
                 'context' => $context,
             ],
             ['w' => 0]
         );
-    }
-
-    /**
-     * Interpolates context values into the message placeholders.
-     *
-     * @param string $message The string containing the placeholders.
-     * @param array  $context The replacement values.
-     *
-     * @return string
-     */
-    private static function interpolate($message, array $context)
-    {
-        foreach ($context as $key => $value) {
-            if (is_scalar($value) || (is_object($value) && method_exists($value, '__toString'))) {
-                $message = str_replace("{{$key}}", (string)$value, $message);
-            }
-        }
-
-        return $message;
     }
 }
