@@ -19,11 +19,12 @@ Document Structure
 ------------------
 Each mongo document constructed will have the following fields.
 * __timestamp__ The current UTC date/time
-* __level__ The RFC 5424 Log Level
+* __level__ The [RFC-5424](https://tools.ietf.org/html/rfc5424) Log Level
 * __message__ The log message
 * __context__ Extraneous information that does not fit well in a string
 
-## Example
+Example Document
+----------------
 ```
 {
 	"_id" : ObjectId("57fc0050fc77ae5c017e52b1"),
@@ -37,6 +38,9 @@ Each mongo document constructed will have the following fields.
 	}
 }
 ```
+
+The logger does not handle log retention.
+[Expire Data from Collections by Setting TTL](https://docs.mongodb.com/v3.2/tutorial/expire-data/)
 
 Basic Usage
 -----------
