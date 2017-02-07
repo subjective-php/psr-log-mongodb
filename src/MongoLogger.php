@@ -1,6 +1,7 @@
 <?php
 namespace Chadicus\Psr\Log;
 
+use Chadicus\Util\Exception;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use MongoDB\Driver\Exception\UnexpectedValueException;
@@ -49,14 +50,56 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
             throw new InvalidArgumentException('Given $message was a valid string value');
         }
 
-        $this->collection->insertOne(
-            [
-                'timestamp' => new UTCDateTime((int)(microtime(true) * 1000)),
-                'level' => $level,
-                'message' => LoggerHelper::interpolateMessage((string)$message, $context),
-                'context' => $context,
-            ],
-            ['w' => 0]
-        );
+        $document = [
+            'timestamp' => new UTCDateTime((int)(microtime(true) * 1000)),
+            'level' => $level,
+            'message' => LoggerHelper::interpolateMessage((string)$message, $context),
+        ];
+
+        if (isset($context['exception']) && is_a($context['exception'], '\Exception')) {
+            $document['exception'] = Exception::toArray($context['exception'], true);
+            unset($context['exception']);
+        }
+
+        $document['extra'] = self::normalizeContext($context);
+
+        $this->collection->insertOne($document, ['w' => 0]);
+    }
+
+    /**
+     * Helper method to convert log context into scalar types.
+     *
+     * @param array $context Any extraneous information that does not fit well in a string.
+     *
+     * @return array
+     */
+    private static function normalizeContext(array $context)
+    {
+        $normalized = [];
+        foreach ($context as $key => $value) {
+            if (is_array($value)) {
+                $normalized[$key] = self::normalizeContext($value);
+                continue;
+            }
+
+            if (is_scalar($value)) {
+                $normalized[$key] = (string)$value;
+                continue;
+            }
+
+            if (!is_object($value)) {
+                $normalized[$key] = gettype($value);
+                continue;
+            }
+
+            if (!method_exists($value, '__toString')) {
+                $normalized[$key] = get_class($value);
+                continue;
+            }
+
+           $normalized[$key] = (string)$value;
+        }
+
+        return $normalized;
     }
 }
