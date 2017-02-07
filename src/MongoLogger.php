@@ -1,6 +1,7 @@
 <?php
 namespace Chadicus\Psr\Log;
 
+use Chadicus\Util\Exception;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use MongoDB\Driver\Exception\UnexpectedValueException;
@@ -54,6 +55,11 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
             'level' => $level,
             'message' => LoggerHelper::interpolateMessage((string)$message, $context),
         ];
+
+        if (isset($context['exception']) && is_a($context['exception'], '\Exception')) {
+            $document['exception'] = Exception::toArray($context['exception'], true);
+            unset($context['exception']);
+        }
 
         $document['extra'] = self::normalizeContext($context);
 

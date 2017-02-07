@@ -155,4 +155,52 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
             ]
         );
     }
+
+    /**
+     * Verify exception is handled properly.
+     *
+     * @test
+     * @covers ::log
+     *
+     * @return void
+     */
+    public function logWithException()
+    {
+        $exception = new \RuntimeException('a message', 21);
+        $test = $this;
+        $insertOneCallback = function ($document, $options) use ($test, $exception) {
+            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
+            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
+            $test->assertSame(
+                [
+                    'timestamp' => $document['timestamp'],
+                    'level' => LogLevel::INFO,
+                    'message' => 'this is a test',
+                    'exception' => [
+                        'type' => 'RuntimeException',
+                        'message' => 'a message',
+                        'code' => 21,
+                        'file' => __FILE__,
+                        'line' => $exception->getLine(),
+                        'trace' => $exception->getTraceAsString(),
+                        'previous' => null,
+                    ],
+                    'extra' => [],
+                ],
+                $document
+            );
+            $test->assertSame(['w' => 0], $options);
+        };
+
+        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
+        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
+
+        (new MongoLogger($collectionMock))->log(
+			LogLevel::INFO,
+            'this is a test',
+            [
+                'exception' => $exception,
+            ]
+        );
+    }
 }
