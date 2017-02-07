@@ -34,7 +34,7 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
                     'timestamp' => $document['timestamp'],
                     'level' => LogLevel::WARNING,
                     'message' => 'this is a test',
-                    'context' => ['some' => ['nested' => ['data']]],
+                    'extra' => ['some' => ['nested' => ['data']]],
                 ],
                 $document
             );
@@ -65,7 +65,7 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
                     'timestamp' => $document['timestamp'],
                     'level' => LogLevel::INFO,
                     'message' => 'user chadicus created',
-                    'context' => ['username' => 'chadicus'],
+                    'extra' => ['username' => 'chadicus'],
                 ],
                 $document
             );
@@ -110,5 +110,49 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
         $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
         $collectionMock->method('insertOne')->will($this->throwException(new \Exception('insertOne was called.')));
         (new MongoLogger($collectionMock))->log(LogLevel::INFO, new \StdClass());
+    }
+
+    /**
+     * Verify context is normalized when log().
+     *
+     * @test
+     * @covers ::log
+     *
+     * @return void
+     */
+    public function logNormalizesContext()
+    {
+        $test = $this;
+        $insertOneCallback = function ($document, $options) use ($test) {
+            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
+            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
+            $test->assertSame(
+                [
+                    'timestamp' => $document['timestamp'],
+                    'level' => LogLevel::INFO,
+                    'message' => 'this is a test',
+                    'extra' => [
+                        'stdout' => 'resource',
+                        'object' => 'stdClass',
+                        'file' => __FILE__,
+                    ],
+                ],
+                $document
+            );
+            $test->assertSame(['w' => 0], $options);
+        };
+
+        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
+        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
+
+        (new MongoLogger($collectionMock))->log(
+			LogLevel::INFO,
+            'this is a test',
+            [
+                'stdout' => STDOUT,
+                'object' => new \StdClass(),
+                'file' => new \SplFileInfo(__FILE__),
+            ]
+        );
     }
 }
