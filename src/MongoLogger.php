@@ -56,7 +56,9 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
             'message' => LoggerHelper::interpolateMessage((string)$message, $context),
         ];
 
-        if (isset($context['exception']) && is_a($context['exception'], '\Exception')) {
+        $exceptionClass = version_compare(phpversion(), '7.0.0', '<') ? '\Exception' : '\Throwable';
+
+        if (isset($context['exception']) && is_a($context['exception'], $exceptionClass)) {
             $document['exception'] = Exception::toArray($context['exception'], true);
             unset($context['exception']);
         }
