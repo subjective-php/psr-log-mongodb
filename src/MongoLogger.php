@@ -83,7 +83,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
             }
 
             if (is_scalar($value)) {
-                $normalized[$key] = (string)$value;
+                $normalized[$key] = $value;
                 continue;
             }
 
