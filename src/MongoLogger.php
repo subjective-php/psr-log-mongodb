@@ -39,16 +39,12 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
      * @param array  $context Any extraneous information that does not fit well in a string.
      *
      * @return void
-     *
-     * @throws InvalidArgumentException Thrown if $level is not a valid PSR-3 Log level.
      */
     public function log($level, $message, array $context = [])
     {
         LoggerHelper::validateLevel($level);
 
-        if (!is_scalar($message) && !(is_object($message) && method_exists($message, '__toString'))) {
-            throw new InvalidArgumentException('Given $message was a valid string value');
-        }
+        self::validateMessage($message);
 
         $document = [
             'timestamp' => new UTCDateTime((int)(microtime(true) * 1000)),
@@ -66,6 +62,28 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
         $document['extra'] = self::normalizeContext($context);
 
         $this->collection->insertOne($document, ['w' => 0]);
+    }
+
+    /**
+     * Helper method to ensure the log message is a string.
+     *
+     * @param string $message The base log message to validate.
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException $message can not be cast to a string value.
+     */
+    private static function validateMessage($message)
+    {
+        if (is_scalar($message)) {
+            return;
+        }
+
+        if (is_object($message) && method_exists($message, '__toString')) {
+            return;
+        }
+
+        throw new InvalidArgumentException('Given $message was a valid string value');
     }
 
     /**

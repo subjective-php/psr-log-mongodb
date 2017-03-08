@@ -113,6 +113,37 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Verify behavior of log() when $message is an object with __toString().
+     *
+     * @test
+     * @covers ::log
+     *
+     * @return void
+     */
+    public function logObjectMessage()
+    {
+        $test = $this;
+        $insertOneCallback = function ($document, $options) use ($test) {
+            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
+            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
+            $test->assertSame(
+                [
+                    'timestamp' => $document['timestamp'],
+                    'level' => LogLevel::INFO,
+                    'message' => __FILE__,
+                    'extra' => ['some' => ['nested' => ['data']]],
+                ],
+                $document
+            );
+            $test->assertSame(['w' => 0], $options);
+        };
+
+        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
+        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
+        (new MongoLogger($collectionMock))->log(LogLevel::INFO, new \SplFileInfo(__FILE__), ['some' => ['nested' => ['data']]]);
+    }
+
+    /**
      * Verify context is normalized when log().
      *
      * @test
