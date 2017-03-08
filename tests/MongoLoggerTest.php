@@ -43,7 +43,11 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
 
         $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
         $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
-        (new MongoLogger($collectionMock))->log(LogLevel::WARNING, 'this is a test', ['some' => ['nested' => ['data']]]);
+        (new MongoLogger($collectionMock))->log(
+            LogLevel::WARNING,
+            'this is a test',
+            ['some' => ['nested' => ['data']]]
+        );
     }
 
     /**
@@ -140,7 +144,11 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
 
         $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
         $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
-        (new MongoLogger($collectionMock))->log(LogLevel::INFO, new \SplFileInfo(__FILE__), ['some' => ['nested' => ['data']]]);
+        (new MongoLogger($collectionMock))->log(
+            LogLevel::INFO,
+            new \SplFileInfo(__FILE__),
+            ['some' => ['nested' => ['data']]]
+        );
     }
 
     /**
@@ -177,7 +185,7 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
         $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
 
         (new MongoLogger($collectionMock))->log(
-			LogLevel::INFO,
+            LogLevel::INFO,
             'this is a test',
             [
                 'stdout' => STDOUT,
@@ -227,7 +235,7 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
         $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
 
         (new MongoLogger($collectionMock))->log(
-			LogLevel::INFO,
+            LogLevel::INFO,
             'this is a test',
             [
                 'exception' => $exception,

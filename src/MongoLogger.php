@@ -117,7 +117,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
                 continue;
             }
 
-           $normalized[$key] = (string)$value;
+            $normalized[$key] = (string)$value;
         }
 
         return $normalized;
