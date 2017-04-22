@@ -16,6 +16,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
 {
     use LevelValidatorTrait;
     use MessageInterpolationTrait;
+    use MessageValidatorTrait;
 
     /**
      * Collection containing logs.
@@ -46,8 +47,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
     public function log($level, $message, array $context = [])//@codingStandardsIgnoreLine Ignore missing type hints
     {
         $this->validateLevel($level);
-
-        self::validateMessage($message);
+        $this->validateMessage($message);
 
         $document = [
             'timestamp' => new UTCDateTime((int)(microtime(true) * 1000)),
@@ -65,28 +65,6 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
         $document['extra'] = self::normalizeContext($context);
 
         $this->collection->insertOne($document, ['w' => 0]);
-    }
-
-    /**
-     * Helper method to ensure the log message is a string.
-     *
-     * @param mixed $message The base log message to validate.
-     *
-     * @return void
-     *
-     * @throws InvalidArgumentException $message can not be cast to a string value.
-     */
-    private static function validateMessage($message)
-    {
-        if (is_scalar($message)) {
-            return;
-        }
-
-        if (is_object($message) && method_exists($message, '__toString')) {
-            return;
-        }
-
-        throw new InvalidArgumentException('Given $message was a valid string value');
     }
 
     /**
