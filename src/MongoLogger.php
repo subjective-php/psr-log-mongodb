@@ -43,7 +43,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
      *
      * @return void
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = [])//@codingStandardsIgnoreLine Ignore missing type hints
     {
         $this->validateLevel($level);
 
@@ -70,7 +70,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
     /**
      * Helper method to ensure the log message is a string.
      *
-     * @param string $message The base log message to validate.
+     * @param mixed $message The base log message to validate.
      *
      * @return void
      *
