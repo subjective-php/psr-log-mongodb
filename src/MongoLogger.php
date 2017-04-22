@@ -14,9 +14,6 @@ use Psr\Log\LoggerInterface;
  */
 final class MongoLogger extends AbstractLogger implements LoggerInterface
 {
-   use LevelValidatorTrait;
-    use MessageInterpolationTrait;
-
     /**
      * Collection containing logs.
      *
@@ -45,14 +42,14 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        $this->validateLevel($level);
+        LoggerHelper::validateLevel($level);
 
         self::validateMessage($message);
 
         $document = [
             'timestamp' => new UTCDateTime((int)(microtime(true) * 1000)),
             'level' => $level,
-            'message' => $this->interpolateMessage((string)$message, $context),
+            'message' => LoggerHelper::interpolateMessage((string)$message, $context),
         ];
 
         $exceptionClass = version_compare(phpversion(), '7.0.0', '<') ? '\Exception' : '\Throwable';
