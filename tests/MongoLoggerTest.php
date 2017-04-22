@@ -104,13 +104,13 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
         $collectionMock = $this->getMongoCollectionMockWithAsserts(
             LogLevel::INFO,
             __FILE__,
-            ['some' => ['nested' => ['data']]],
+            ['foo' => 'bar'],
             null
         );
         (new MongoLogger($collectionMock))->log(
             LogLevel::INFO,
             new \SplFileInfo(__FILE__),
-            ['some' => ['nested' => ['data']]]
+            ['foo' => 'bar']
         );
     }
 
