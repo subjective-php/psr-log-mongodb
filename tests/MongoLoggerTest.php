@@ -34,6 +34,7 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
                     'timestamp' => $document['timestamp'],
                     'level' => LogLevel::WARNING,
                     'message' => 'this is a test',
+                    'exception' => null,
                     'extra' => ['some' => ['nested' => ['data']]],
                 ],
                 $document
@@ -69,6 +70,7 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
                     'timestamp' => $document['timestamp'],
                     'level' => LogLevel::INFO,
                     'message' => 'user chadicus created',
+                    'exception' => null,
                     'extra' => ['username' => 'chadicus'],
                 ],
                 $document
@@ -135,6 +137,7 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
                     'timestamp' => $document['timestamp'],
                     'level' => LogLevel::INFO,
                     'message' => __FILE__,
+                    'exception' => null,
                     'extra' => ['some' => ['nested' => ['data']]],
                 ],
                 $document
@@ -170,6 +173,7 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
                     'timestamp' => $document['timestamp'],
                     'level' => LogLevel::INFO,
                     'message' => 'this is a test',
+                    'exception' => null,
                     'extra' => [
                         'stdout' => 'resource',
                         'object' => 'stdClass',

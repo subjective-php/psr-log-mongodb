@@ -49,37 +49,40 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
         $this->validateLevel($level);
         $this->validateMessage($message);
 
-        $document = [
+        $document = $this->buildBasicDocument($level, $message, $context);
+        $document['exception'] = $this->getExceptionData($context);
+
+        unset($context['exception']);
+
+        $document['extra'] = $this->getNormalizeContext($context);
+        $this->collection->insertOne($document, ['w' => 0]);
+    }
+
+    private function buildBasicDocument($level, $message, array $context = [])
+    {
+        return [
             'timestamp' => new UTCDateTime((int)(microtime(true) * 1000)),
             'level' => $level,
             'message' => $this->interpolateMessage((string)$message, $context),
         ];
-
-        $exceptionClass = version_compare(phpversion(), '7.0.0', '<') ? '\Exception' : '\Throwable';
-
-        if (isset($context['exception']) && is_a($context['exception'], $exceptionClass)) {
-            $document['exception'] = Exception::toArray($context['exception'], true);
-            unset($context['exception']);
-        }
-
-        $document['extra'] = self::normalizeContext($context);
-
-        $this->collection->insertOne($document, ['w' => 0]);
     }
 
-    /**
-     * Helper method to convert log context into scalar types.
-     *
-     * @param array $context Any extraneous information that does not fit well in a string.
-     *
-     * @return array
-     */
-    private static function normalizeContext(array $context)
+    private function getExceptionData($context)
+    {
+        $exceptionClass = version_compare(phpversion(), '7.0.0', '<') ? '\Exception' : '\Throwable';
+        if (isset($context['exception']) && is_a($context['exception'], $exceptionClass)) {
+            return Exception::toArray($context['exception'], true);
+        }
+
+        return null;
+    }
+
+    private function getNormalizeContext(array $context)
     {
         $normalized = [];
         foreach ($context as $key => $value) {
             if (is_array($value)) {
-                $normalized[$key] = self::normalizeContext($value);
+                $normalized[$key] = $this->getNormalizeContext($value);
                 continue;
             }
 
