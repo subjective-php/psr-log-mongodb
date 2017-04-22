@@ -14,7 +14,7 @@
     "require": {
         "mongodb/mongodb": "^1.0",
         "psr/log": "^1.0",
-        "chadicus/psr-log-helper": "^1.0",
+        "chadicus/psr-log-helper": "^1.1",
         "chadicus/util-exceptions": ">=2.0"
     },
     "require-dev": {

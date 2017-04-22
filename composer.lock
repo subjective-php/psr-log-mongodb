@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d5f7d39c0bb4b77a4adb1da8d70e61e",
+    "content-hash": "7e9f8513bbb58be7611b55fbacd294ea",
     "packages": [
         {
             "name": "chadicus/psr-log-helper",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chadicus/psr-log-helper.git",
-                "reference": "c1871d563c1d0b3703cb0162e57bb307332c6be3"
+                "reference": "2e8a751be1d02771ae48dbf5fd6c39d7c82e0ae0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chadicus/psr-log-helper/zipball/c1871d563c1d0b3703cb0162e57bb307332c6be3",
-                "reference": "c1871d563c1d0b3703cb0162e57bb307332c6be3",
+                "url": "https://api.github.com/repos/chadicus/psr-log-helper/zipball/2e8a751be1d02771ae48dbf5fd6c39d7c82e0ae0",
+                "reference": "2e8a751be1d02771ae48dbf5fd6c39d7c82e0ae0",
                 "shasum": ""
             },
             "require": {
@@ -47,7 +47,7 @@
                 }
             ],
             "description": "Utilities to assist with PSR-3 logger implementations",
-            "time": "2016-10-11T00:55:43+00:00"
+            "time": "2017-04-22T00:17:46+00:00"
         },
         {
             "name": "chadicus/util-exceptions",
