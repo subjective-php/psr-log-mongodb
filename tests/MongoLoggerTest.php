@@ -25,25 +25,12 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function log()
     {
-        $test = $this;
-        $insertOneCallback = function ($document, $options) use ($test) {
-            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
-            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
-            $test->assertSame(
-                [
-                    'timestamp' => $document['timestamp'],
-                    'level' => LogLevel::WARNING,
-                    'message' => 'this is a test',
-                    'exception' => null,
-                    'extra' => ['some' => ['nested' => ['data']]],
-                ],
-                $document
-            );
-            $test->assertSame(['w' => 0], $options);
-        };
-
-        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
-        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
+        $collectionMock = $this->getMongoCollectionMockWithAsserts(
+            LogLevel::WARNING,
+            'this is a test',
+            ['some' => ['nested' => ['data']]],
+            null
+        );
         (new MongoLogger($collectionMock))->log(
             LogLevel::WARNING,
             'this is a test',
@@ -61,26 +48,12 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function logWithInterpolation()
     {
-        $test = $this;
-        $insertOneCallback = function ($document, $options) use ($test) {
-            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
-            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
-            $test->assertSame(
-                [
-                    'timestamp' => $document['timestamp'],
-                    'level' => LogLevel::INFO,
-                    'message' => 'user chadicus created',
-                    'exception' => null,
-                    'extra' => ['username' => 'chadicus'],
-                ],
-                $document
-            );
-            $test->assertSame(['w' => 0], $options);
-        };
-
-        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
-        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
-
+        $collectionMock = $this->getMongoCollectionMockWithAsserts(
+            LogLevel::INFO,
+            'user chadicus created',
+            ['username' => 'chadicus'],
+            null
+        );
         (new MongoLogger($collectionMock))->log(LogLevel::INFO, 'user {username} created', ['username' => 'chadicus']);
     }
 
@@ -128,25 +101,12 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function logObjectMessage()
     {
-        $test = $this;
-        $insertOneCallback = function ($document, $options) use ($test) {
-            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
-            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
-            $test->assertSame(
-                [
-                    'timestamp' => $document['timestamp'],
-                    'level' => LogLevel::INFO,
-                    'message' => __FILE__,
-                    'exception' => null,
-                    'extra' => ['some' => ['nested' => ['data']]],
-                ],
-                $document
-            );
-            $test->assertSame(['w' => 0], $options);
-        };
-
-        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
-        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
+        $collectionMock = $this->getMongoCollectionMockWithAsserts(
+            LogLevel::INFO,
+            __FILE__,
+            ['some' => ['nested' => ['data']]],
+            null
+        );
         (new MongoLogger($collectionMock))->log(
             LogLevel::INFO,
             new \SplFileInfo(__FILE__),
@@ -164,30 +124,16 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function logNormalizesContext()
     {
-        $test = $this;
-        $insertOneCallback = function ($document, $options) use ($test) {
-            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
-            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
-            $test->assertSame(
-                [
-                    'timestamp' => $document['timestamp'],
-                    'level' => LogLevel::INFO,
-                    'message' => 'this is a test',
-                    'exception' => null,
-                    'extra' => [
-                        'stdout' => 'resource',
-                        'object' => 'stdClass',
-                        'file' => __FILE__,
-                    ],
-                ],
-                $document
-            );
-            $test->assertSame(['w' => 0], $options);
-        };
-
-        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
-        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
-
+        $collectionMock = $this->getMongoCollectionMockWithAsserts(
+            LogLevel::INFO,
+            'this is a test',
+            [
+                'stdout' => 'resource',
+                'object' => 'stdClass',
+                'file' => __FILE__,
+            ],
+            null
+        );
         (new MongoLogger($collectionMock))->log(
             LogLevel::INFO,
             'this is a test',
@@ -210,33 +156,20 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
     public function logWithException()
     {
         $exception = new \RuntimeException('a message', 21);
-        $test = $this;
-        $insertOneCallback = function ($document, $options) use ($test, $exception) {
-            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
-            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
-            $test->assertSame(
-                [
-                    'timestamp' => $document['timestamp'],
-                    'level' => LogLevel::INFO,
-                    'message' => 'this is a test',
-                    'exception' => [
-                        'type' => 'RuntimeException',
-                        'message' => 'a message',
-                        'code' => 21,
-                        'file' => __FILE__,
-                        'line' => $exception->getLine(),
-                        'trace' => $exception->getTraceAsString(),
-                        'previous' => null,
-                    ],
-                    'extra' => [],
-                ],
-                $document
-            );
-            $test->assertSame(['w' => 0], $options);
-        };
-
-        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
-        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
+        $collectionMock = $this->getMongoCollectionMockWithAsserts(
+            LogLevel::INFO,
+            'this is a test',
+            [],
+            [
+                'type' => 'RuntimeException',
+                'message' => 'a message',
+                'code' => 21,
+                'file' => __FILE__,
+                'line' => $exception->getLine(),
+                'trace' => $exception->getTraceAsString(),
+                'previous' => null,
+            ]
+        );
 
         (new MongoLogger($collectionMock))->log(
             LogLevel::INFO,
@@ -245,5 +178,28 @@ final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
                 'exception' => $exception,
             ]
         );
+    }
+
+    private function getMongoCollectionMockWithAsserts($level, $message, $extra, $exception)
+    {
+        $test = $this;
+        $insertOneCallback = function ($document, $options) use ($test, $level, $message, $extra, $exception) {
+            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
+            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
+            $test->assertSame(
+                [
+                    'timestamp' => $document['timestamp'],
+                    'level' => $level,
+                    'message' => $message,
+                    'exception' => $exception,
+                    'extra' => $extra,
+                ],
+                $document
+            );
+            $test->assertSame(['w' => 0], $options);
+        };
+        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
+        $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
+        return $collectionMock;
     }
 }
