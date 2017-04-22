@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "efeafb5ae81cb2a6c62b6ae9c1173152",
+    "content-hash": "0bf39fdf5feef6e4310c198f84fce39d",
     "packages": [
         {
             "name": "chadicus/psr-log-helper",
@@ -205,20 +205,20 @@
     "packages-dev": [
         {
             "name": "chadicus/coding-standard",
-            "version": "v1.2.1",
+            "version": "v1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chadicus/coding-standard.git",
-                "reference": "0dd21e93eea128ce4bddc30b38dc0a08aae51564"
+                "reference": "d243bf04d12fb9c0cf920736f35ed75919665309"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chadicus/coding-standard/zipball/0dd21e93eea128ce4bddc30b38dc0a08aae51564",
-                "reference": "0dd21e93eea128ce4bddc30b38dc0a08aae51564",
+                "url": "https://api.github.com/repos/chadicus/coding-standard/zipball/d243bf04d12fb9c0cf920736f35ed75919665309",
+                "reference": "d243bf04d12fb9c0cf920736f35ed75919665309",
                 "shasum": ""
             },
             "require": {
-                "squizlabs/php_codesniffer": "~2.0"
+                "squizlabs/php_codesniffer": "^2.0"
             },
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
@@ -238,7 +238,7 @@
                 "phpcs",
                 "standard"
             ],
-            "time": "2017-01-04T20:38:40+00:00"
+            "time": "2017-04-20T12:43:21+00:00"
         },
         {
             "name": "doctrine/instantiator",
