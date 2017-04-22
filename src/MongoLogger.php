@@ -67,7 +67,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
         ];
     }
 
-    private function getExceptionData($context)
+    private function getExceptionData(array $context = [])
     {
         $exceptionClass = version_compare(phpversion(), '7.0.0', '<') ? '\Exception' : '\Throwable';
         if (isset($context['exception']) && is_a($context['exception'], $exceptionClass)) {
@@ -77,10 +77,10 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
         return null;
     }
 
-    private function getNormalizeArray(array $context)
+    private function getNormalizeArray(array $array = [])
     {
         $normalized = [];
-        foreach ($context as $key => $value) {
+        foreach ($array as $key => $value) {
             $normalized[$key] = $this->getNormalizedValue($value);
         }
 
