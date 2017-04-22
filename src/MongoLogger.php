@@ -54,7 +54,7 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
 
         unset($context['exception']);
 
-        $document['extra'] = $this->getNormalizeContext($context);
+        $document['extra'] = $this->getNormalizeArray($context);
         $this->collection->insertOne($document, ['w' => 0]);
     }
 
@@ -77,33 +77,26 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
         return null;
     }
 
-    private function getNormalizeContext(array $context)
+    private function getNormalizeArray(array $context)
     {
         $normalized = [];
         foreach ($context as $key => $value) {
-            if (is_array($value)) {
-                $normalized[$key] = $this->getNormalizeContext($value);
-                continue;
-            }
-
-            if (is_scalar($value)) {
-                $normalized[$key] = $value;
-                continue;
-            }
-
-            if (!is_object($value)) {
-                $normalized[$key] = gettype($value);
-                continue;
-            }
-
-            if (!method_exists($value, '__toString')) {
-                $normalized[$key] = get_class($value);
-                continue;
-            }
-
-            $normalized[$key] = (string)$value;
+            $normalized[$key] = $this->getNormalizedValue($value);
         }
 
         return $normalized;
+    }
+
+    private function getNormalizedValue($value)
+    {
+        if (is_array($value)) {
+            return $this->getNormalizeArray($value);
+        }
+
+        if (is_object($value)) {
+            return  method_exists($value, '__toString') ? "{$value}" : get_class($value);
+        }
+
+        return is_scalar($value) ? $value : gettype($value);
     }
 }
