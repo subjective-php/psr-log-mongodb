@@ -11,6 +11,9 @@
         }
     ],
     "license": "MIT",
+    "config": {
+        "sort-packages": true
+    },
     "require": {
         "mongodb/mongodb": "^1.0",
         "psr/log": "^1.0",
