@@ -8,12 +8,17 @@ use MongoDB\Driver\Exception\UnexpectedValueException;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
+use SubjectivePHP\Psr\Log\ExceptionExtractorTrait;
+use SubjectivePHP\Psr\Log\LevelValidatorTrait;
+use SubjectivePHP\Psr\Log\MessageInterpolationTrait;
+use SubjectivePHP\Psr\Log\MessageValidatorTrait;
 
 /**
  * PSR-3 Logger implementation writing to a MongoDB.
  */
 final class MongoLogger extends AbstractLogger implements LoggerInterface
 {
+    use ExceptionExtractorTrait;
     use LevelValidatorTrait;
     use MessageInterpolationTrait;
     use MessageValidatorTrait;
@@ -50,15 +55,15 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
         $this->validateMessage($message);
 
         $document = $this->buildBasicDocument($level, $message, $context);
-        $document['exception'] = $this->getExceptionData($context);
 
+        $document['exception'] = $this->getExceptionData($context);
         unset($context['exception']);
 
         $document['extra'] = $this->getNormalizeArray($context);
         $this->collection->insertOne($document, ['w' => 0]);
     }
 
-    private function buildBasicDocument($level, $message, array $context = [])
+    private function buildBasicDocument(string $level, string $message, array $context = [])
     {
         return [
             'timestamp' => new UTCDateTime((int)(microtime(true) * 1000)),
@@ -69,12 +74,12 @@ final class MongoLogger extends AbstractLogger implements LoggerInterface
 
     private function getExceptionData(array $context = [])
     {
-        $exceptionClass = version_compare(phpversion(), '7.0.0', '<') ? '\Exception' : '\Throwable';
-        if (isset($context['exception']) && is_a($context['exception'], $exceptionClass)) {
-            return Exception::toArray($context['exception'], true);
+        $exception = $this->getExceptionFromContext($context);
+        if ($exception === null) {
+            return null;
         }
 
-        return null;
+        return Exception::toArray($exception, true);
     }
 
     private function getNormalizeArray(array $array = [])
