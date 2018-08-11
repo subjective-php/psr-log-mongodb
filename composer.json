@@ -14,6 +14,9 @@
     "config": {
         "sort-packages": true
     },
+   "provide": {
+        "psr/log-implementation": "1.0"
+    },
     "require": {
         "php": "^7.0",
         "chadicus/util-exceptions": ">=2.0",
