@@ -4,6 +4,7 @@ namespace ChadicusTest\Psr\Log;
 
 use Chadicus\Psr\Log\MongoLogger;
 use MongoDB\BSON\UTCDateTime;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
 /**
@@ -13,7 +14,7 @@ use Psr\Log\LogLevel;
  * @covers ::<private>
  * @covers ::__construct
  */
-final class MongoLoggerTest extends \PHPUnit_Framework_TestCase
+final class MongoLoggerTest extends TestCase
 {
     /**
      * Verify basic behavior of log().

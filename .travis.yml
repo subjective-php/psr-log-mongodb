@@ -13,5 +13,5 @@ before_script:
   - composer self-update
   - yes '' | pecl install -f mongodb-1.1
   - composer install
-script: ./vendor/bin/phpunit --coverage-clover clover.xml
+script: ./vendor/bin/phpunit
 after_success: ./vendor/bin/php-coveralls -v
