@@ -1,7 +1,7 @@
 {
     "name": "subjective-php/psr-log-mongodb",
     "description": "A concrete implementation of the PSR LoggerInterface using mongo",
-    "keywords": ["psr", "log", "mongo"],
+    "keywords": ["psr", "psr3", "log", "mongo", "mongodb"],
     "authors": [
         {
             "name": "Chad Gray",
