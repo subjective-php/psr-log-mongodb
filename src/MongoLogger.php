@@ -1,5 +1,6 @@
 <?php
-namespace Chadicus\Psr\Log;
+
+namespace SubjectivePHP\Psr\Log;
 
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
@@ -7,10 +8,6 @@ use MongoDB\Driver\Exception\UnexpectedValueException;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
-use SubjectivePHP\Psr\Log\ExceptionExtractorTrait;
-use SubjectivePHP\Psr\Log\LevelValidatorTrait;
-use SubjectivePHP\Psr\Log\MessageInterpolationTrait;
-use SubjectivePHP\Psr\Log\MessageValidatorTrait;
 use SubjectivePHP\Util\Exception;
 
 /**

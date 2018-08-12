@@ -1,16 +1,16 @@
 <?php
 
-namespace ChadicusTest\Psr\Log;
+namespace SubjectivePHPTest\Psr\Log;
 
-use Chadicus\Psr\Log\MongoLogger;
 use MongoDB\BSON\UTCDateTime;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
+use SubjectivePHP\Psr\Log\MongoLogger;
 
 /**
- * Unit tests for the \Chadicus\Psr\Log\MongoLogger class.
+ * Unit tests for the \SubjectivePHP\Psr\Log\MongoLogger class.
  *
- * @coversDefaultClass \Chadicus\Psr\Log\MongoLogger
+ * @coversDefaultClass \SubjectivePHP\Psr\Log\MongoLogger
  * @covers ::<private>
  * @covers ::__construct
  */
