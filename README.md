@@ -81,19 +81,19 @@ $logger->info('User {username} was created', ['username' => 'chadicus']);
 
 PSR Log MongoDB requires PHP 7.0 (or later).
 
-##Composer
+## Composer
 To add the library as a local, per-project dependency use [Composer](http://getcomposer.org)! Simply add a dependency on `subjective-php/psr-log-mongodb` to your project's `composer.json`.
 ```sh
 composer require subjective-php/psr-log-mongodb
 ```
 
-##Contact
+## Contact
 Developers may be contacted at:
 
  * [Pull Requests](/../../pulls)
  * [Issues](/../../issues)
 
-##Run Unit Tests
+## Run Build
 With a checkout of the code get [Composer](http://getcomposer.org) in your PATH and run:
 
 ```sh

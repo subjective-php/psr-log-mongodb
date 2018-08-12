@@ -1,15 +1,7 @@
 {
     "name": "subjective-php/psr-log-mongodb",
     "description": "A concrete implementation of the PSR LoggerInterface using mongo",
-    "keywords": ["psr", "log", "mongo"],
-    "authors": [
-        {
-            "name": "Chad Gray",
-            "email": "chadwickgray@gmail.com",
-            "homepage": "http://chadicus.org",
-            "role": "Developer"
-        }
-    ],
+    "keywords": ["psr", "psr3", "log", "mongo", "mongodb"],
     "license": "MIT",
     "config": {
         "sort-packages": true
