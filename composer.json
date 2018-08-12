@@ -1,5 +1,5 @@
 {
-    "name": "chadicus/psr-log-mongodb",
+    "name": "subjective-php/psr-log-mongodb",
     "description": "A concrete implementation of the PSR LoggerInterface using mongo",
     "keywords": ["psr", "log", "mongo"],
     "authors": [
@@ -30,9 +30,9 @@
         "squizlabs/php_codesniffer": "^3.3"
     },
     "autoload": {
-        "psr-4": { "Chadicus\\Psr\\Log\\": "src" }
+        "psr-4": { "SubjectivePHP\\Psr\\Log\\": "src" }
     },
     "autoload-dev": {
-        "psr-4": { "ChadicusTest\\Psr\\Log\\": "tests" }
+        "psr-4": { "SubjectivePHPTest\\Psr\\Log\\": "tests" }
     }
 }
