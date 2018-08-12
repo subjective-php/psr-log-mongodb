@@ -19,10 +19,10 @@
     },
     "require": {
         "php": "^7.0",
-        "chadicus/util-exceptions": ">=2.0",
         "mongodb/mongodb": "^1.0",
         "psr/log": "^1.0",
-        "subjective-php/psr-log-helper": "^3.0"
+        "subjective-php/psr-log-helper": "^3.0",
+        "subjective-php/util-exceptions": "^4.0"
     },
     "require-dev": {
         "php-coveralls/php-coveralls": "^2.1",

@@ -1,7 +1,6 @@
 <?php
 namespace Chadicus\Psr\Log;
 
-use Chadicus\Util\Exception;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\Collection;
 use MongoDB\Driver\Exception\UnexpectedValueException;
@@ -12,6 +11,7 @@ use SubjectivePHP\Psr\Log\ExceptionExtractorTrait;
 use SubjectivePHP\Psr\Log\LevelValidatorTrait;
 use SubjectivePHP\Psr\Log\MessageInterpolationTrait;
 use SubjectivePHP\Psr\Log\MessageValidatorTrait;
+use SubjectivePHP\Util\Exception;
 
 /**
  * PSR-3 Logger implementation writing to a MongoDB.
