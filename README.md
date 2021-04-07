@@ -62,7 +62,7 @@ Message/Context Interpolation
 -----------------------------
 
 The message may contain placeholders which can be replaced with values from the context array. In the example below the final logged message will be
-`User subjective-php was created`
+`User chadicus was created`
 
 ```php
 <?php
