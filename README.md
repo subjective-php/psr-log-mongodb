@@ -1,9 +1,7 @@
 PSR Log MongoDB
 ===============
 
-[![Build Status](https://travis-ci.org/subjective-php/psr-log-mongodb.svg?branch=master)](https://travis-ci.org/subjective-php/psr-log-mongodb)
 [![Code Quality](https://scrutinizer-ci.com/g/subjective-php/psr-log-mongodb/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/subjective-php/psr-log-mongodb/?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/subjective-php/psr-log-mongodb/badge.svg?branch=master)](https://coveralls.io/github/subjective-php/psr-log-mongodb?branch=master)
 
 [![Latest Stable Version](https://poser.pugx.org/subjective-php/psr-log-mongodb/v/stable)](https://packagist.org/packages/subjective-php/psr-log-mongodb)
 [![Latest Unstable Version](https://poser.pugx.org/subjective-php/psr-log-mongodb/v/unstable)](https://packagist.org/packages/subjective-php/psr-log-mongodb)
