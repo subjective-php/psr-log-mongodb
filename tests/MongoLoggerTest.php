@@ -3,7 +3,9 @@
 namespace SubjectivePHPTest\Psr\Log;
 
 use MongoDB\BSON\UTCDateTime;
+use MongoDB\Collection;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
 use SubjectivePHP\Psr\Log\MongoLogger;
 
@@ -63,14 +65,14 @@ final class MongoLoggerTest extends TestCase
      *
      * @test
      * @covers ::log
-     * @expectedException \Psr\Log\InvalidArgumentException
-     * @expectedExceptionMessage Given $level was not a known LogLevel
      *
      * @return void
      */
     public function logUnknownLevel()
     {
-        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectexceptionMessage('Given $level was not a known LogLevel');
+        $collectionMock = $this->getMockBuilder(Collection::class)->disableOriginalConstructor()->getMock();
         $collectionMock->method('insertOne')->will($this->throwException(new \Exception('insertOne was called.')));
         (new MongoLogger($collectionMock))->log('unknown', 'this is a test');
     }
@@ -80,14 +82,14 @@ final class MongoLoggerTest extends TestCase
      *
      * @test
      * @covers ::log
-     * @expectedException \Psr\Log\InvalidArgumentException
-     * @expectedExceptionMessage Given $message was a valid string value
      *
      * @return void
      */
     public function logNonStringMessage()
     {
-        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectexceptionMessage('Given $message was a valid string value');
+        $collectionMock = $this->getMockBuilder(Collection::class)->disableOriginalConstructor()->getMock();
         $collectionMock->method('insertOne')->will($this->throwException(new \Exception('insertOne was called.')));
         (new MongoLogger($collectionMock))->log(LogLevel::INFO, new \StdClass());
     }
@@ -181,13 +183,12 @@ final class MongoLoggerTest extends TestCase
         );
     }
 
-    private function getMongoCollectionMockWithAsserts($level, $message, $extra, $exception)
+    private function getMongoCollectionMockWithAsserts($level, $message, $extra, $exception) : Collection
     {
-        $test = $this;
-        $insertOneCallback = function ($document, $options) use ($test, $level, $message, $extra, $exception) {
-            $test->assertInstanceOf('\\MongoDB\\BSON\\UTCDateTime', $document['timestamp']);
-            $test->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
-            $test->assertSame(
+        $insertOneCallback = function ($document, $options) use ($level, $message, $extra, $exception) {
+            $this->assertInstanceOf(UTCDateTime::class, $document['timestamp']);
+            $this->assertLessThanOrEqual(time(), $document['timestamp']->toDateTime()->getTimestamp());
+            $this->assertSame(
                 [
                     'timestamp' => $document['timestamp'],
                     'level' => $level,
@@ -197,9 +198,9 @@ final class MongoLoggerTest extends TestCase
                 ],
                 $document
             );
-            $test->assertSame(['w' => 0], $options);
+            $this->assertSame(['w' => 0], $options);
         };
-        $collectionMock = $this->getMockBuilder('\\MongoDB\\Collection')->disableOriginalConstructor()->getMock();
+        $collectionMock = $this->getMockBuilder(Collection::class)->disableOriginalConstructor()->getMock();
         $collectionMock->expects($this->once())->method('insertOne')->will($this->returnCallback($insertOneCallback));
         return $collectionMock;
     }
