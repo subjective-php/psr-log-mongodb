@@ -10,7 +10,7 @@
         "psr/log-implementation": "1.0"
     },
     "require": {
-        "php": "^7.0",
+        "php": "^7.0||^8.0",
         "mongodb/mongodb": "^1.0",
         "psr/log": "^1.0",
         "subjective-php/psr-log-helper": "^3.0",
